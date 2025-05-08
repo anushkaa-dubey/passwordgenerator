@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CryptoSafe | Advanced Password Generator</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="wave-bg"></div>
+    
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="logo-container">
+                    <i class="fas fa-shield-alt logo-icon"></i>
+                    <h1>CryptoSafe</h1>
+                </div>
+                <button id="theme-toggle" aria-label="Toggle dark mode">
+                    <span id="theme-icon" class="theme-icon"></span>
+                </button>
+            </div>
+            <p class="tagline">Generate the most unhackable passwords in seconds</p>
+        </header>
+
+        <main>
+            <div class="generator-card">
+                <div class="password-display">
+                    <input type="text" id="password" readonly placeholder="Your secure password will appear here">
+                    <button id="copy-btn" class="tooltip" aria-label="Copy password">
+                        <i class="fas fa-copy"></i>
+                        <span class="tooltiptext">Copy</span>
+                    </button>
+                </div>
+
+                <div class="controls">
+                    <div class="length-control">
+                        <div class="length-header">
+                            <label for="length">Password Length</label>
+                            <span id="length-value" class="length-value">12</span>
+                        </div>
+                        <input type="range" id="length" min="4" max="32" value="12">
+                    </div>
+
+                    <div class="options-grid">
+                        <label class="option-checkbox">
+                            <input type="checkbox" id="uppercase" checked>
+                            <span class="checkmark"></span>
+                            <span class="option-text">Uppercase (A-Z)</span>
+                        </label>
+                        <label class="option-checkbox">
+                            <input type="checkbox" id="lowercase" checked>
+                            <span class="checkmark"></span>
+                            <span class="option-text">Lowercase (a-z)</span>
+                        </label>
+                        <label class="option-checkbox">
+                            <input type="checkbox" id="numbers" checked>
+                            <span class="checkmark"></span>
+                            <span class="option-text">Numbers (0-9)</span>
+                        </label>
+                        <label class="option-checkbox">
+                            <input type="checkbox" id="symbols" checked>
+                            <span class="checkmark"></span>
+                            <span class="option-text">Symbols (!@#%)</span>
+                        </label>
+                    </div>
+
+                    <div class="strength-meter">
+                        <div class="strength-header">
+                            <span>Password Strength</span>
+                            <span id="strength-text" class="strength-text">Medium</span>
+                        </div>
+                        <div class="strength-bar-container">
+                            <div class="strength-bar"></div>
+                        </div>
+                    </div>
+
+                    <button id="generate-btn" class="generate-btn">
+                        <i class="fas fa-key"></i>
+                        Generate Password
+                    </button>
+                </div>
+            </div>
+
+            <div class="security-tips">
+                <h3><i class="fas fa-lightbulb"></i> Security Tips</h3>
+                <ul>
+                    <li>Use at least 12 characters for strong passwords</li>
+                    <li>Combine letters, numbers, and symbols</li>
+                    <li>Never reuse passwords across sites</li>
+                    <li>Consider using a password manager</li>
+                </ul>
+            </div>
+        </main>
+
+        <footer>
+            <div class="footer-content">
+                <p>Created with <i class="fas fa-heart"></i> by Anushka Dubey</p>
+                <a href="https://github.com/yourusername/password-generator" target="_blank">
+                    <i class="fab fa-github"></i> View on GitHub
+                </a>
+            </div>
+            <div class="disclaimer">
+                <p>All password generation happens locally in your browser. No passwords are stored or transmitted.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
