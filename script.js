@@ -10,9 +10,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const symbolsEl = document.getElementById('symbols');
     const generateBtn = document.getElementById('generate-btn');
     const strengthBar = document.querySelector('.strength-bar');
-    const strengthText = document.querySelector('.strength-text');
+    const strengthText = document.getElementById('strength-text');
     const themeToggle = document.getElementById('theme-toggle');
-    const themeIcon = document.getElementById('theme-icon');
     
     // Character sets
     const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -20,12 +19,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const numberChars = '0123456789';
     const symbolChars = '!@#$%^&*()_+~`|}{[]\\:;?><,./-=';
     
-    // Initialize theme
     const savedTheme = localStorage.getItem('theme') || 'light';
     document.documentElement.setAttribute('data-theme', savedTheme);
-    updateThemeIcon(savedTheme);
     
-    // Update length display
     lengthEl.addEventListener('input', function() {
         lengthValueEl.textContent = this.value;
     });
@@ -40,23 +36,27 @@ document.addEventListener('DOMContentLoaded', function() {
         
         passwordEl.value = generatePassword(length, hasUpper, hasLower, hasNumber, hasSymbol);
         updateStrengthIndicator(passwordEl.value);
+        
+        // Add animation to generate button
+        this.classList.add('clicked');
+        setTimeout(() => {
+            this.classList.remove('clicked');
+        }, 300);
     });
     
-    // Copy password to clipboard
     copyBtn.addEventListener('click', function() {
         if (!passwordEl.value) return;
         
         passwordEl.select();
         document.execCommand('copy');
         
-        // Show tooltip
-        const tooltip = document.createElement('span');
-        tooltip.className = 'tooltiptext';
-        tooltip.textContent = 'Copied!';
-        this.appendChild(tooltip);
+        const icon = this.querySelector('i');
+        icon.classList.remove('fa-copy');
+        icon.classList.add('fa-check');
         
         setTimeout(() => {
-            tooltip.remove();
+            icon.classList.remove('fa-check');
+            icon.classList.add('fa-copy');
         }, 2000);
     });
     
@@ -67,7 +67,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         document.documentElement.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
-        updateThemeIcon(newTheme);
     });
     
     // Generate password function
@@ -76,13 +75,18 @@ document.addEventListener('DOMContentLoaded', function() {
         const typesCount = upper + lower + number + symbol;
         
         if (typesCount === 0) {
-            alert('Please select at least one character type');
+            showAlert('Please select at least one character type');
             return '';
         }
         
         const typesArr = [{upper}, {lower}, {number}, {symbol}].filter(item => Object.values(item)[0]);
         
-        for (let i = 0; i < length; i++) {
+        for (let type of typesArr) {
+            const funcName = Object.keys(type)[0];
+            generatedPassword += randomChar(funcName);
+        }
+
+        for (let i = typesArr.length; i < length; i++) {
             const type = typesArr[Math.floor(Math.random() * typesArr.length)];
             const funcName = Object.keys(type)[0];
             generatedPassword += randomChar(funcName);
@@ -91,7 +95,6 @@ document.addEventListener('DOMContentLoaded', function() {
         return shuffleString(generatedPassword);
     }
     
-    // Get random character from selected character set
     function randomChar(type) {
         switch(type) {
             case 'upper':
@@ -121,14 +124,11 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateStrengthIndicator(password) {
         if (!password) return;
         
-        // Calculate strength (simple version)
         let strength = 0;
         const length = password.length;
         
-        // Length contributes up to 50% of strength
         strength += Math.min(length / 32 * 50, 50);
         
-        // Character variety contributes the rest
         const hasUpper = /[A-Z]/.test(password);
         const hasLower = /[a-z]/.test(password);
         const hasNumber = /[0-9]/.test(password);
@@ -137,37 +137,36 @@ document.addEventListener('DOMContentLoaded', function() {
         const varietyCount = hasUpper + hasLower + hasNumber + hasSymbol;
         strength += (varietyCount / 4) * 50;
         
-        // Update UI
-        const strengthBarElement = strengthBar.querySelector('::after') || 
-                                 document.createElement('div');
-        
-        strengthBarElement.style.width = `${strength}%`;
+        strengthBar.style.width = `${strength}%`;
         
         if (strength < 40) {
-            strengthBarElement.style.backgroundColor = 'var(--strength-weak)';
-            strengthText.textContent = 'Strength: Weak';
+            strengthBar.style.backgroundColor = 'var(--strength-weak)';
+            strengthText.textContent = 'Weak';
+            strengthText.style.color = 'var(--strength-weak)';
         } else if (strength < 70) {
-            strengthBarElement.style.backgroundColor = 'var(--strength-medium)';
-            strengthText.textContent = 'Strength: Medium';
+            strengthBar.style.backgroundColor = 'var(--strength-medium)';
+            strengthText.textContent = 'Medium';
+            strengthText.style.color = 'var(--strength-medium)';
         } else {
-            strengthBarElement.style.backgroundColor = 'var(--strength-strong)';
-            strengthText.textContent = 'Strength: Strong';
-        }
-        
-        if (!strengthBar.querySelector('::after')) {
-            strengthBar.appendChild(strengthBarElement);
+            strengthBar.style.backgroundColor = 'var(--strength-strong)';
+            strengthText.textContent = 'Strong';
+            strengthText.style.color = 'var(--strength-strong)';
         }
     }
     
-    //light and dark theme toggle
-    function updateThemeIcon(theme) {
-        if (theme === 'dark') {
-            themeIcon.classList.remove('fa-moon');
-            themeIcon.classList.add('fa-sun');
-        } else {
-            themeIcon.classList.remove('fa-sun');
-            themeIcon.classList.add('fa-moon');
-        }
+    // Show alert message
+    function showAlert(message) {
+        const alert = document.createElement('div');
+        alert.className = 'alert-message';
+        alert.textContent = message;
+        document.body.appendChild(alert);
+        
+        setTimeout(() => {
+            alert.classList.add('fade-out');
+            setTimeout(() => {
+                alert.remove();
+            }, 300);
+        }, 3000);
     }
     
     // Generate initial password
